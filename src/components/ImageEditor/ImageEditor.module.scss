@@ -1,0 +1,33 @@
+.imagePreview {
+  overflow: hidden;
+}
+
+.imagesWrapper {
+  display: flex;
+  gap: 1rem;
+
+  .imageWrapper {
+    flex: 1;
+    border: 2px solid #cecece;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+.sliderWrapper {
+  width: 50%;
+  margin-top: 0.25rem;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+
+  & > button {
+    flex: 1;
+  }
+}
