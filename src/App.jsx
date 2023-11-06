@@ -9,13 +9,7 @@ const App = () => {
   // state
   const [file, setFile] = useState(null)
 
-  return (
-    <div>
-      <ImageEditor {...{ file, setFile }} />
-
-      <AIGenerator {...{ setFile }} />
-    </div>
-  )
+  return <div>{!file ? <AIGenerator {...{ setFile }} /> : <ImageEditor {...{ file, setFile }} />}</div>
 }
 
 export default App

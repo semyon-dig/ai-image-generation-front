@@ -59,6 +59,7 @@ const ImageEditor = ({ file, setFile }) => {
 
   const onClose = () => {
     setRotate(0)
+    setFile(null)
   }
 
   return (

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 // assets
 import testImage from '../../assets/test.jpg'
+import testResponse from '../../assets/example.json'
 
 // components
 import Button from '../Button'
@@ -33,24 +34,8 @@ const AIGenerator = ({ setFile }) => {
       //     size: '256x256', // * 1024x1024: $0.020 / image; 512x512: $0.018 / image; 256x256: $0.016 / image)
       //   })
 
-      const response = {
-        created: 1699273224,
-        data: [
-          {
-            url: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-X4oNJltYT1oRxpXTJWQ5QQCz/user-ThLvWmrgvQEySTN7KjxmToCT/img-mXYcGOGduU9LjFsEy08vPhiU.png?st=2023-11-06T11%3A20%3A24Z&se=2023-11-06T13%3A20%3A24Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-11-06T11%3A27%3A07Z&ske=2023-11-07T11%3A27%3A07Z&sks=b&skv=2021-08-06&sig=zHppXH4E0ULAT7c7WjOdrnw7XTZ2Do6/AIVdnI/%2B42U%3D',
-          },
-          {
-            url: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-X4oNJltYT1oRxpXTJWQ5QQCz/user-ThLvWmrgvQEySTN7KjxmToCT/img-pAorzRC4GAUgQQWevYt2zFLx.png?st=2023-11-06T11%3A20%3A24Z&se=2023-11-06T13%3A20%3A24Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-11-06T11%3A27%3A07Z&ske=2023-11-07T11%3A27%3A07Z&sks=b&skv=2021-08-06&sig=0%2BEfmx77reJPsqMhz9MK1k9EIzMlMYV9CSQtziZJzaQ%3D',
-          },
-          {
-            url: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-X4oNJltYT1oRxpXTJWQ5QQCz/user-ThLvWmrgvQEySTN7KjxmToCT/img-3xirade5VwmNDFNzTYJRp4y2.png?st=2023-11-06T11%3A20%3A24Z&se=2023-11-06T13%3A20%3A24Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-11-06T11%3A27%3A07Z&ske=2023-11-07T11%3A27%3A07Z&sks=b&skv=2021-08-06&sig=bf6zQX%2B7/xOd%2BykYLHiehNCvzrlvxtVX6P0W00ZiG4M%3D',
-          },
-          {
-            url: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-X4oNJltYT1oRxpXTJWQ5QQCz/user-ThLvWmrgvQEySTN7KjxmToCT/img-wtd9P7VmY70hpUpcGxoWOr3R.png?st=2023-11-06T11%3A20%3A24Z&se=2023-11-06T13%3A20%3A24Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-11-06T11%3A27%3A07Z&ske=2023-11-07T11%3A27%3A07Z&sks=b&skv=2021-08-06&sig=Sk8DIA8oF4FBXCMsvm8PnhhgJDFOAD/xCO9N0hcc/XQ%3D',
-          },
-        ],
-      }
-
+      const response = testResponse
+      console.log('response', response)
       setImages(response.data)
       setTimeout(() => setIsLoading(false), 500)
     } catch (error) {
@@ -67,20 +52,33 @@ const AIGenerator = ({ setFile }) => {
     if (data[0] === 0xff && data[1] === 0xd8) return 'image/jpeg'
     if (data[0] === 0x47 && data[1] === 0x49 && data[2] === 0x46 && data[3] === 0x38) return 'image/gif'
     if (data[0] === 0x42 && data[1] === 0x4d) return 'image/bmp'
-    return 'image/png'
+    return 'image/jpeg'
   }
 
-  const editImage = async (imageUrl) => {
-    // TODO: Substitute testImage with imageUrl
-    const image = await fetch(testImage)
-    // const { data: buffer } = await response.json()
-    // console.log('buffer', buffer)
-    // const uint8Array = new Uint8Array(buffer)
-    // const type = getImageType(buffer)
-    // const blob = new Blob([uint8Array], { type })
+  function base64ToFile(base64, fileName, mimeType) {
+    // Remove the data URI prefix if it exists
+    const base64Data = base64.replace(/^data:[^;]+;base64,/, '')
+
+    // Create a Blob object from the base64 data
+    const byteCharacters = atob(base64Data)
+    const byteNumbers = new Array(byteCharacters.length)
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i)
+    }
+
+    const byteArray = new Uint8Array(byteNumbers)
+    const blob = new Blob([byteArray], { type: mimeType })
+
+    // Create a File object from the Blob
+    return new File([blob], fileName, { type: mimeType })
+  }
+
+  const editImage = async (base64) => {
+    const type = getImageType(base64)
 
     // Create a new File object from the blob
-    const file = new File([image], image?.title || 'upsiide_ai_generated_idea.png', { type: 'image/png' })
+    const file = base64ToFile(base64, 'upsiide_ai_generated_idea.jpeg', { type })
 
     const reader = new FileReader()
 
@@ -91,6 +89,7 @@ const AIGenerator = ({ setFile }) => {
         preview: dataUrl,
       })
 
+      console.log('file', file)
       setFile(file)
     }
 
@@ -115,16 +114,16 @@ const AIGenerator = ({ setFile }) => {
         </div>
       ) : (
         <div className={imagesContainer}>
-          {images?.map(({ url }, i) => (
+          {images?.map(({ b64_json }, i) => (
             <div key={i} className={imageWrapper}>
-              <img src={url} alt="" />
+              <img src={`data:image/png;base64, ${b64_json}`} alt="" />
 
               <div className={backdrop}>
-                <Button color="secondary" size="sm" onClick={() => editImage(url)}>
+                <Button color="secondary" size="sm" onClick={() => editImage(b64_json)}>
                   Edit
                 </Button>
 
-                <Button size="sm" onClick={() => useImage(url)}>
+                <Button size="sm" onClick={() => useImage(b64_json)}>
                   Use
                 </Button>
               </div>
